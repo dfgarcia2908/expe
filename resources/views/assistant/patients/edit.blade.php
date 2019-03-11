@@ -1,13 +1,19 @@
 @extends('layouts.sisgec')
 
 @section('content')
+
+    <div id="onRestoreDataAlert" class="alert alert-warning" style="display:none;" role="alert">
+        <h4 class="alert-heading">{{__("global.warning")}}</h4>
+        <p>{!!sprintf(__("global.restore_data_alert"), '<a href="'.route("patients.new").'" class="resetDataButton">', '</a>')!!}</p>
+    </div>
+
     <div class="row align-items-center">
         <div class="col text-left">
             <h2 class="c-grey-900 mT-10 mB-30">{{ __("global.edit_patient") }} > {{ $patient->full_name }}</h2>
         </div>
     </div>
 
-    <form action="{{ route("patients.update") }}" method="POST" class="inputs-auto-scroll">
+    <form action="{{ route("patients.update") }}" method="POST" class="inputs-auto-scroll auto-save-fields">
         @csrf
         <input type="hidden" name="id" value="{{ $patient->id }}">
         <div class="row gap-20 masonry pos-r">
@@ -60,11 +66,20 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <label for="scholarship">{{ __("person.scholarship") }}</label>
-                                            <input type="text" class="form-control" id="scholarship" name="patient[scholarship]" value="{{ old("patient.scholarship", $patient->scholarship) }}" />
+                                            @php
+                                                $scholarships = is_array(__("scholarships")) ? __("scholarships") : [];
+                                            @endphp
+
+                                            <select name="patient[scholarship]" id="scholarship" class="form-control custom-select">
+                                                <option value="">{{ __("global.select_an_option") }}</option>
+                                                @foreach ($scholarships as $scholarship)
+                                                    <option value="{{ $scholarship }}"{{ old("patient.scholarship", $patient->scholarship) === $scholarship ? " selected" : "" }}>{{ $scholarship }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                         <div class="col-6">
                                             <label for="occupation">{{ __("person.occupation") }}</label>
-                                            <input type="text" class="form-control" id="occupation" name="patient[occupation]" value="{{ old("patient.occupation", $patient->occupation) }}" />
+                                            <input type="text" class="form-control" id="occupation" name="patient[occupation]" value="{{ old("patient.occupation", $patient->occupation) }}" placeholder="{{ __("global.example_occupation") }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -73,11 +88,20 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <label for="religion">{{ __("person.religion") }}</label>
-                                            <input type="text" class="form-control" id="religion" name="patient[religion]" value="{{ old("patient.religion", $patient->religion) }}" />
+                                            <input type="text" class="form-control" id="religion" name="patient[religion]" value="{{ old("patient.religion", $patient->religion) }}" placeholder="{{ __("global.example_religion") }}" />
                                         </div>
                                         <div class="col-6">
                                             <label for="civil_status">{{ __("person.civil_status") }}</label>
-                                            <input type="text" class="form-control" id="civil_status" name="patient[civil_status]" value="{{ old("patient.civil_status", $patient->civil_status) }}" />
+                                            @php
+                                                $civil_statuses = is_array(__("civil_status")) ? __("civil_status") : [];
+                                            @endphp
+
+                                            <select name="patient[civil_status]" id="civil_status" class="form-control custom-select" required>
+                                                <option value="">{{ __("global.select_an_option") }}</option>
+                                                @foreach ($civil_statuses as $civil_status)
+                                                    <option value="{{ $civil_status }}"{{ old("patient.civil_status", $patient->civil_status) === $civil_status ? " selected" : "" }}>{{ $civil_status }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -86,11 +110,11 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <label for="place_of_birth">{{ __("person.place_of_birth") }}</label>
-                                            <input type="text" class="form-control" id="place_of_birth" name="patient[place_of_birth]" value="{{ old("patient.place_of_birth", $patient->place_of_birth) }}" />
+                                            <input type="text" class="form-control" id="place_of_birth" name="patient[place_of_birth]" value="{{ old("patient.place_of_birth", $patient->place_of_birth) }}" placeholder="{{ __("global.example_place_of_birth") }}" />
                                         </div>
                                         <div class="col-6">
                                             <label for="place_of_residence">{{ __("person.place_of_residence") }}</label>
-                                            <input type="text" class="form-control" id="place_of_residence" name="patient[place_of_residence]" value="{{ old("patient.place_of_residence", $patient->place_of_residence) }}" />
+                                            <input type="text" class="form-control" id="place_of_residence" name="patient[place_of_residence]" value="{{ old("patient.place_of_residence", $patient->place_of_residence) }}" placeholder="{{ __("global.example_place_of_residence") }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -135,11 +159,11 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <label for="email">{{ __("person.email") }}</label>
-                                            <input type="email" class="form-control" id="email" name="patient[email]" value="{{ old("patient.email", $patient->email) }}" />
+                                            <input type="email" class="form-control" id="email" name="patient[email]" value="{{ old("patient.email", $patient->email) }}" placeholder="{{ __("global.example_email") }}" />
                                         </div>
                                         <div class="col-6">
                                             <label for="phone">{{ __("person.phone") }}</label>
-                                            <input type="text" class="form-control" id="phone" name="patient[phone]" value="{{ old("patient.phone", $patient->phone) }}" />
+                                            <input type="text" class="form-control" id="phone" name="patient[phone]" value="{{ old("patient.phone", $patient->phone) }}" placeholder="(123) 456 789" required />
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +181,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <label for="referred_by">{{ __("person.referred_by") }}</label>
-                                            <input type="text" class="form-control" id="referred_by" name="patient[referred_by]" value="{{ old("patient.referred_by", $patient->referred_by) }}" />
+                                            <input type="text" class="form-control" id="referred_by" name="patient[referred_by]" value="{{ old("patient.referred_by", $patient->referred_by) }}" placeholder="{{ __("global.example_referred_by") }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +198,7 @@
                 <div class="bgc-white p-20 bd">
                     <div>
                         <div class="row justify-content-center">
-                            <a href="{{ route("patient", ["id" => $patient->id]) }}" class="btn btn-danger">{{ __("global.exit") }}</a>
+                            <a href="{{ route("patient", ["id" => $patient->id]) }}" class="btn btn-danger resetDataButton">{{ __("global.exit") }}</a>
                             <button class="btn btn-success ml-2">{{ __("global.save_patient") }}</button>
                         </div>
                     </div>

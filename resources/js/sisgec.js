@@ -7,6 +7,9 @@ import swal from 'sweetalert';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import 'notifyjs-browser';
+import './autosave';
+import './checkConnection';
+var moment = require('moment');
 
 Dropzone.autoDiscover = false;
 
@@ -60,6 +63,33 @@ $(document).ready(function() {
             var birt = $(this).val();
             $("#age").val(calcAge(birt) + " " + I18N.years);
         });
+        var cyear = new Date();
+        cyear = cyear.getFullYear();
+        /*var birthdateMask = new IMask($("#birthdate").get(0), {
+            mask: Date,
+            pattern: 'Y-`m-`d',
+            blocks: {
+                d: {
+                  mask: IMask.MaskedRange,
+                  from: 1,
+                  to: 31,
+                  maxLength: 2,
+                },
+                m: {
+                  mask: IMask.MaskedRange,
+                  from: 1,
+                  to: 12,
+                  maxLength: 2,
+                },
+                Y: {
+                  mask: IMask.MaskedRange,
+                  from: 1900,
+                  to: cyear
+                }
+            },
+            lazy: true,
+        });
+        birthdateMask.updateValue();*/
     }
 
     if($("#weight").length > 0) {
@@ -124,31 +154,31 @@ $(document).ready(function() {
 
     if($('#scholarship').length > 0) {
         $('#scholarship').autocomplete({
-            serviceUrl: '/api/fragments/scholarships/list'
+            serviceUrl: HOME_URL + '/api/fragments/scholarships/list'
         });
     }
 
     if($('#occupation').length > 0) {
         $('#occupation').autocomplete({
-            serviceUrl: '/api/fragments/occupations/list'
+            serviceUrl: HOME_URL + '/api/fragments/occupations/list'
         });
     }
 
     if($('#religion').length > 0) {
         $('#religion').autocomplete({
-            serviceUrl: '/api/fragments/religions/list'
+            serviceUrl: HOME_URL + '/api/fragments/religions/list'
         });
     }
 
     if($('#civil_status').length > 0) {
         $('#civil_status').autocomplete({
-            serviceUrl: '/api/fragments/civil-status/list'
+            serviceUrl: HOME_URL + '/api/fragments/civil-status/list'
         });
     }
 
     if($('#searched').length > 0) {
         $('#searched').autocomplete({
-            serviceUrl: '/api/search',
+            serviceUrl: HOME_URL + '/api/search',
             formatResult: function (suggestion, currentValue) {
                 return '<a href="' + suggestion.data + '">'+ suggestion.value +'</a>';
             },
@@ -161,7 +191,7 @@ $(document).ready(function() {
     var options = {
         url: HOME_URL + "/attachments/save",
         paramName: "file", // The name that will be used to transfer the file
-        maxFilesize: 5, // MB
+        maxFilesize: 1000, // MB
         autoProcessQueue: true,
         uploadMultiple: true,
         parallelUploads: 5,
@@ -194,18 +224,24 @@ $(document).ready(function() {
             var ext = "?patient_id=" + $("div#uploadFiles").data("patient_id");
             options.url = options.url + ext;
         }
-        console.log(options.url);
+        //console.log(options.url);
         var dz = new Dropzone("div#uploadFiles", options);
         Dropzone.options.uploadFiles = options;
     }
 
     if($(':input').length > 0) {
-        $(':input').focus(function(){
-            var center = ($(window).height()/2) - 100;
-            var top = $(this).offset().top ;
-            if (top > center){
-                $(window).scrollTop(top-center);
-            }
+        $(':input').focus(function(e){
+            var $el = $(this);
+            $(window).keyup(function (e) {
+                var code = (e.keyCode ? e.keyCode : e.which);
+                if (code == 9 && $(':input:focus').length) {
+                    var center = ($(window).height()/2) - 100;
+                    var top = $el.offset().top;
+                    if (top > center){
+                        $(window).scrollTop(top-center);
+                    }
+                }
+            });
         });
     }
 
@@ -220,6 +256,28 @@ $(document).ready(function() {
                 dangerMode: true,
               }).then((willDelete) => {
                 if(willDelete) {
+                    swal("", I18N.processing, "success");
+                    window.location.replace(rlink);
+                }
+            });
+
+            e.preventDefault();
+            return false;
+        });
+    }
+
+    if($('a.cancel_this').length > 0) {
+        $('a.cancel_this').on('click', function (e) {
+            var rlink = $(this).attr("href");
+            swal({
+                title: I18N.cancel_alert_title,
+                text: I18N.cancel_alert_text,
+                icon: "warning",
+                buttons: [I18N.cancel, I18N.ok],
+                dangerMode: true,
+            }).then((willDelete) => {
+                if(willDelete) {
+                    autosave.manuallyReleaseData();
                     swal("", I18N.processing, "success");
                     window.location.replace(rlink);
                 }
@@ -299,5 +357,50 @@ $(document).ready(function() {
 
     if($("a[title]").length > 0) {
         tippy('a[title]');
+    }
+
+    if($(".auto-save-fields").length > 0) {
+        var onSave = false;
+        var si = $(".saved-info"),
+            sp = $("<span></span>"),
+        autosave = $( ".auto-save-fields" ).sisyphus({
+            locationBased: true,
+            excludeFields: $( ".fallback input" ),
+            timeout: 60,
+            onBeforeSave: function() {
+                if(!onSave) {
+                    si.removeClass("no-saved").addClass("saved");
+                    onSave = true;
+                }
+            },
+            onSave: function() {
+                if(si.children("span").length < 1) {
+                    sp.text(I18N.saving_draft).css("opacity", "0");
+                    si.prepend(sp);
+                    sp.animate({opacity: 1}, 1000);
+                }
+                setTimeout(() => {
+                    onSave = false;
+                    si.removeClass("saved").addClass("no-saved");
+                    sp.text(I18N.saved_draft);
+                    setTimeout(() => {
+                        sp.animate({opacity: 0}, 500, function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
+                }, 1000);
+            },
+            onRestore: function() {
+                if($("#onRestoreDataAlert").length > 0) {
+                    $("#onRestoreDataAlert").show();
+                }
+            }
+        });
+        
+        if($(".resetDataButton").length > 0) {
+            $(".resetDataButton").on("click", function() {
+                autosave.manuallyReleaseData();
+            });
+        }
     }
 });
