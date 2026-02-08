@@ -13,7 +13,7 @@ function filter_array_by($query, $array=[]) {
     if(!is_array($array)) $array = [];
     if($query==="all") return $array;
 
-    $array = array_where($array, function ($value, $key) use ($query){
+    $array = array_filter($array, function ($value) use ($query){
         return (false !== stripos($value, $query));
     });
 
