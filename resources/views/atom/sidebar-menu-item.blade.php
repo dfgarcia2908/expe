@@ -31,7 +31,7 @@
         <ul id="{{$dropdown_id}}-menu" class="dropdown-menu" aria-labelledby="{{$dropdown_id}}">
             @foreach ($children as $child)
                 <li>
-                    <a class='sidebar-link' href="{{ array_get($child, "url", "#") }}">{{ array_get($child, "title", "") }}</a>
+                    <a class='sidebar-link' href="{{ \Illuminate\Support\Arr::get($child, 'url', '#') }}">{{ \Illuminate\Support\Arr::get($child, 'title', '') }}</a>
                 </li>
             @endforeach
         </ul>
