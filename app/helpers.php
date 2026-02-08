@@ -1,6 +1,6 @@
 <?php
 
-function array_find($needle, array $haystack) {
+function sisgec_array_find($needle, array $haystack) {
     foreach ($haystack as $key => $value) {
         if(str_contains($value, $needle)){
             return $key;
