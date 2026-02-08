@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Settings;
+use App\Models\Settings;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (\Schema::hasTable('configs')) {
+        if (Schema::hasTable('configs')) {
             foreach (Settings::all() as $setting) {
                 $setting->loadInMemory();
             }
