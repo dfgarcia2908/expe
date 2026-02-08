@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\PhysicalExploration;
+use App\Models\PhysicalExploration;
 use Illuminate\Http\Request;
 
 class PhysicalExplorationController extends Controller

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\NeurologicalExamination;
+use App\Models\NeurologicalExamination;
 use Illuminate\Http\Request;
 
 class NeurologicalExaminationController extends Controller

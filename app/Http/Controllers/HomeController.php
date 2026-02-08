@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Settings;
+use App\Models\Settings;
 use Carbon\Carbon;
-use App\Patient;
+use App\Models\Patient;
 use Carbon\CarbonPeriod;
-use App\MedicalAppointment;
+use App\Models\MedicalAppointment;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller

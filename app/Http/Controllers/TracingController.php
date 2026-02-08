@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Tracing;
-use App\Patient;
-use App\Measure;
-use App\Study;
+use App\Models\Tracing;
+use App\Models\Patient;
+use App\Models\Measure;
+use App\Models\Study;
 use Illuminate\Http\Request;
 
 class TracingController extends Controller

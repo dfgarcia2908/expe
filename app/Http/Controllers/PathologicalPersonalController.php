@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\PathologicalPersonal;
+use App\Models\PathologicalPersonal;
 use Illuminate\Http\Request;
 
 class PathologicalPersonalController extends Controller

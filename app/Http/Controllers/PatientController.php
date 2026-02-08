@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Study;
-use App\Patient;
+use App\Models\Study;
+use App\Models\Patient;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;

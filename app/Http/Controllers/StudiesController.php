@@ -2,8 +2,8 @@
  
 namespace App\Http\Controllers;
 
-use App\Study;
-use App\Patient;
+use App\Models\Study;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Intervention\Image\Facades\Image;

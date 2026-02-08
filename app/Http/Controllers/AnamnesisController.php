@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Anamnesis;
+use App\Models\Anamnesis;
 use Illuminate\Http\Request;
 
 class AnamnesisController extends Controller

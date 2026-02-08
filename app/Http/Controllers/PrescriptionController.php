@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Patient;
-use App\Prescription;
-use App\Measure;
+use App\Models\Patient;
+use App\Models\Prescription;
+use App\Models\Measure;
 use Illuminate\Http\Request;
 
 class PrescriptionController extends Controller

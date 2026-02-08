@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\InitialClinicalHistory;
+use App\Models\InitialClinicalHistory;
 use Illuminate\Http\Request;
 
 class InitialClinicalHistoryController extends Controller

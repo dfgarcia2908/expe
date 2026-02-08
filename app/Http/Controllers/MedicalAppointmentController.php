@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\MedicalAppointment;
+use App\Models\MedicalAppointment;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;

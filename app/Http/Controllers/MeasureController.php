@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Measure;
+use App\Models\Measure;
 use Illuminate\Http\Request;
 
 class MeasureController extends Controller

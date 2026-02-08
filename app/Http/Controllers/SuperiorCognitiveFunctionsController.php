@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SuperiorCognitiveFunctions;
+use App\Models\SuperiorCognitiveFunctions;
 use Illuminate\Http\Request;
 
 class SuperiorCognitiveFunctionsController extends Controller

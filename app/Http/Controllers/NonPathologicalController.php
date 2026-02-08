@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\NonPathological;
+use App\Models\NonPathological;
 use Illuminate\Http\Request;
 
 class NonPathologicalController extends Controller

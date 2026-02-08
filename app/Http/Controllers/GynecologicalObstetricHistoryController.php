@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\GynecologicalObstetricHistory;
+use App\Models\GynecologicalObstetricHistory;
 use Illuminate\Http\Request;
 
 class GynecologicalObstetricHistoryController extends Controller
