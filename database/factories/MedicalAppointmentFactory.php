@@ -1,9 +1,18 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\MedicalAppointment::class, function (Faker $faker) {
-    return [
-        //
-    ];
-});
+use App\Models\MedicalAppointment;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class MedicalAppointmentFactory extends Factory
+{
+    protected $model = MedicalAppointment::class;
+
+    public function definition(): array
+    {
+        return [
+            //
+        ];
+    }
+}
