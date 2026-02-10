@@ -180,7 +180,7 @@ class PrescriptionController extends Controller
             $prescription = Prescription::find($id);
             if(!is_null($prescription)) {
                 $patient = $prescription->initial_clinical_history->patient;
-                $pdf_name = str_slug($patient->full_name)."-".str_slug($prescription->folio)."-".date('d-m-Y_h_i_a');
+                $pdf_name = \Illuminate\Support\Str::slug($patient->full_name)."-".\Illuminate\Support\Str::slug($prescription->folio)."-".date('d-m-Y_h_i_a');
                 $pdf = \PDF::loadView("pdf.$doc", [
                     "patient" => $patient,
                     "prescription" => $prescription

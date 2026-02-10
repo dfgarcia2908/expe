@@ -24,7 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/patients', [PatientController::class, 'index'])->name('patients');
     Route::get('/patients/new', [PatientController::class, 'create'])->name('patients.new');
     Route::get('/patients/edit/{id}', [PatientController::class, 'edit'])->name('patients.edit');
-    Route::post('/patients/save', [PatientController::class, 'store'])->name('patients.save');
+    Route::post('/patients/save', [PatientController::class, 'store'])->middleware('prevent.duplicates')->name('patients.save');
     Route::post('/patients/update', [PatientController::class, 'update'])->name('patients.update');
     Route::get('/patient/{id}', [PatientController::class, 'show'])->name('patient');
     Route::get('/patient/delete/{id}', [PatientController::class, 'destroy'])->name('patient.remove');

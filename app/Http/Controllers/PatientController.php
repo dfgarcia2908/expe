@@ -46,22 +46,22 @@ class PatientController extends Controller
             'patient.sex' => 'required',
         ]);
     
-        $patient = $this->create_new("App\Patient", "patient");
-        $anamnesis = $this->create_new("App\Anamnesis", "inherit_family");
-        $non_pathological = $this->create_new("App\NonPathological", "non_pathological");
-        $pathological_personal = $this->create_new("App\PathologicalPersonal", "pathological");
-        $gynecological_obstetric = $this->create_new("App\GynecologicalObstetricHistory", "gyneco_obstetrics");
-        $initial_clinical_history = $this->create_new("App\InitialClinicalHistory", "initial_clinical_history");
+        $patient = $this->create_new("App\Models\Patient", "patient");
+        $anamnesis = $this->create_new("App\Models\Anamnesis", "inherit_family");
+        $non_pathological = $this->create_new("App\Models\NonPathological", "non_pathological");
+        $pathological_personal = $this->create_new("App\Models\PathologicalPersonal", "pathological");
+        $gynecological_obstetric = $this->create_new("App\Models\GynecologicalObstetricHistory", "gyneco_obstetrics");
+        $initial_clinical_history = $this->create_new("App\Models\InitialClinicalHistory", "initial_clinical_history");
 
         $anamnesis->non_pathological()->save($non_pathological);
         $anamnesis->pathological_personal()->save($pathological_personal);
         $anamnesis->gynecological_obstetric_history()->save($gynecological_obstetric);
 
-        $physical_exploration = $this->create_new("App\PhysicalExploration", "physical_exploration");
-        $neurological_examination = $this->create_new("App\NeurologicalExamination", "neuro_exam");
+        $physical_exploration = $this->create_new("App\Models\PhysicalExploration", "physical_exploration");
+        $neurological_examination = $this->create_new("App\Models\NeurologicalExamination", "neuro_exam");
 
-        $orientation = $this->create_new("App\Orientation", "orientation");
-        $superior_cognitive_functions = $this->create_new("App\SuperiorCognitiveFunctions", "superior_cognitive_functions");
+        $orientation = $this->create_new("App\Models\Orientation", "orientation");
+        $superior_cognitive_functions = $this->create_new("App\Models\SuperiorCognitiveFunctions", "superior_cognitive_functions");
         
         $neurological_examination->orientation()->save($orientation);
         $neurological_examination->superior_cognitive_functions()->save($superior_cognitive_functions);
@@ -79,7 +79,7 @@ class PatientController extends Controller
 
         $patient->initial_clinical_history()->save($initial_clinical_history);
 
-        $measure = $this->create_new("App\Measure", "measure");
+        $measure = $this->create_new("App\Models\Measure", "measure");
         $patient->measures()->save($measure);
 
         $patient->save();
@@ -103,8 +103,26 @@ class PatientController extends Controller
     public function show($patient=false)
     {
         if(!$patient) abort(404);
-        $patient = Patient::find($patient);
+        $patient = Patient::with([
+            'initial_clinical_history.anamnesis.non_pathological',
+            'initial_clinical_history.anamnesis.pathological_personal',
+            'initial_clinical_history.anamnesis.gynecological_obstetric_history',
+            'initial_clinical_history.physical_exploration.neurological_examination.orientation',
+            'initial_clinical_history.physical_exploration.neurological_examination.superior_cognitive_functions',
+            'initial_clinical_history.tracings',
+            'initial_clinical_history.prescriptions',
+            'initial_clinical_history.studies',
+            'measures'
+        ])->find($patient);
+        
+        if(!$patient) abort(404);
+        
         $role = auth()->user()->get_role();
+        
+        if(!$patient->initial_clinical_history) {
+            return view("$role.patients.basic", ["patient" => $patient]);
+        }
+        
         return view("$role.patients.self", ["patient" => $patient]);
     }
 
@@ -138,61 +156,61 @@ class PatientController extends Controller
                 $patient->update( $this->set_defaults($request->input("patient"), Patient::get_defaults()) );
                 if($request->has("measure")) {
                     $patient->measures()->update(
-                        $this->set_defaults($request->input("measure"), \App\Measure::get_defaults())
+                        $this->set_defaults($request->input("measure"), \App\Models\Measure::get_defaults())
                     );
                 }
 
                 if($request->has("initial_clinical_history")) {
                     $patient->initial_clinical_history()->update(
-                        $this->set_defaults($request->input("initial_clinical_history"), \App\InitialClinicalHistory::get_defaults())
+                        $this->set_defaults($request->input("initial_clinical_history"), \App\Models\InitialClinicalHistory::get_defaults())
                     );
                 }
 
                 if($request->has("inherit_family")) {
                     $patient->initial_clinical_history->anamnesis()->update([
-                        'inherit_family' => $request->input("inherit_family", \App\Anamnesis::get_defaults()["inherit_family"])
+                        'inherit_family' => $request->input("inherit_family", \App\Models\Anamnesis::get_defaults()["inherit_family"])
                     ]);
                 }
 
                 if($request->has("non_pathological")) {
                     $patient->initial_clinical_history->anamnesis->non_pathological()->update(
-                        $this->set_defaults($request->input("non_pathological"), \App\NonPathological::get_defaults())
+                        $this->set_defaults($request->input("non_pathological"), \App\Models\NonPathological::get_defaults())
                     );
                 }
 
                 if($request->has("pathological")) {
                     $patient->initial_clinical_history->anamnesis->pathological_personal()->update(
-                        $this->set_defaults($request->input("pathological"), \App\PathologicalPersonal::get_defaults())
+                        $this->set_defaults($request->input("pathological"), \App\Models\PathologicalPersonal::get_defaults())
                     );
                 }
 
                 if($request->has("gyneco_obstetrics")) {
                     $patient->initial_clinical_history->anamnesis->gynecological_obstetric_history()->update(
-                        $this->set_defaults($request->input("gyneco_obstetrics"), \App\GynecologicalObstetricHistory::get_defaults())
+                        $this->set_defaults($request->input("gyneco_obstetrics"), \App\Models\GynecologicalObstetricHistory::get_defaults())
                     );
                 }
 
                 if($request->has("physical_exploration")) {
                     $patient->initial_clinical_history->physical_exploration()->update(
-                        $this->set_defaults($request->input("physical_exploration"), \App\PhysicalExploration::get_defaults())
+                        $this->set_defaults($request->input("physical_exploration"), \App\Models\PhysicalExploration::get_defaults())
                     );
                 }
 
                 if($request->has("neuro_exam")) {
                     $patient->initial_clinical_history->physical_exploration->neurological_examination()->update(
-                        $this->set_defaults($request->input("neuro_exam"), \App\NeurologicalExamination::get_defaults())
+                        $this->set_defaults($request->input("neuro_exam"), \App\Models\NeurologicalExamination::get_defaults())
                     );
                 }
 
                 if($request->has("orientation")) {
                     $patient->initial_clinical_history->physical_exploration->neurological_examination->orientation()->update(
-                        $this->set_defaults($request->input("orientation"), \App\Orientation::get_defaults())
+                        $this->set_defaults($request->input("orientation"), \App\Models\Orientation::get_defaults())
                     );
                 }
 
                 if($request->has("superior_cognitive_functions")) {
                     $patient->initial_clinical_history->physical_exploration->neurological_examination->superior_cognitive_functions()->update(
-                        $this->set_defaults($request->input("superior_cognitive_functions"), \App\SuperiorCognitiveFunctions::get_defaults())
+                        $this->set_defaults($request->input("superior_cognitive_functions"), \App\Models\SuperiorCognitiveFunctions::get_defaults())
                     );
                 }
 
@@ -255,7 +273,7 @@ class PatientController extends Controller
         if (\View::exists("pdf.$doc")) {
             $patient = Patient::find($id);
             if(!is_null($patient)) {
-                $pdf_name = str_slug($patient->full_name)."-$doc-".date('d-m-Y_h_i_a');
+                $pdf_name = \Illuminate\Support\Str::slug($patient->full_name)."-$doc-".date('d-m-Y_h_i_a');
                 $pdf = \PDF::loadView("pdf.$doc", [
                     "patient" => $patient
                 ]);

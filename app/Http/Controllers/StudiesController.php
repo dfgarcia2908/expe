@@ -73,7 +73,7 @@ class StudiesController extends Controller
  
         for ($i = 0; $i < count($photos); $i++) {
             $photo = $photos[$i];
-            $name = sha1(date('YmdHis') . str_random(30));
+            $name = sha1(date('YmdHis') . \Illuminate\Support\Str::random(30));
             $save_name = $name . '.' . $photo->getClientOriginalExtension();
  
             $photo->move($this->photos_path, $save_name);
@@ -97,7 +97,7 @@ class StudiesController extends Controller
                                     <a href="%s" class="btn btn-danger delete-study remove_this"><i class="fas fa-fw fa-trash-alt"></i></a>
                                 </div>
                             </div>';
-                $out = sprintf($template, $upload->id, str_slug($upload->type),
+                $out = sprintf($template, $upload->id, \Illuminate\Support\Str::slug($upload->type),
                     $upload->screenshot, $upload->original_name,
                     $upload->type_name, $upload->path, url("/attachments/delete/$upload->id"));
                 $arr_study['template'] = $out;

@@ -9,11 +9,11 @@ class PhysicalExploration extends Model
     protected $fillable = ['general_appearance','head','neck','chest','abdomen','back','extremities','genitals'];
 
     public function neurological_examination() {
-        return $this->hasOne('App\NeurologicalExamination');
+        return $this->hasOne('App\Models\NeurologicalExamination');
     }
 
     public function initial_clinical_history() {
-        return $this->belongsTo('App\InitialClinicalHistory');
+        return $this->belongsTo('App\Models\InitialClinicalHistory');
     }
 
     public static function get_defaults() {

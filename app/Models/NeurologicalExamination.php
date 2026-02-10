@@ -9,15 +9,15 @@ class NeurologicalExamination extends Model
     protected $fillable = ['mental_examination','language','memory','hallucinations','delusions','esape','cranial_nerves','actor_system','sensitive_system','vestibular_system','meninges'];
 
     public function physical_exploration() {
-        return $this->belongsTo('App\PhysicalExploration');
+        return $this->belongsTo('App\Models\PhysicalExploration');
     }
 
     public function orientation() {
-        return $this->hasOne('App\Orientation');
+        return $this->hasOne('App\Models\Orientation');
     }
 
     public function superior_cognitive_functions() {
-        return $this->hasOne('App\SuperiorCognitiveFunctions');
+        return $this->hasOne('App\Models\SuperiorCognitiveFunctions');
     }
 
     public static function get_defaults() {

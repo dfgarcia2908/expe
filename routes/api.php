@@ -1,6 +1,7 @@
 <?php
 
-use App\Patient;
+use App\Models\Patient;
+use App\Models\Study;
 use Illuminate\Http\Request;
 
 /*
@@ -50,7 +51,7 @@ Route::get('/fragments/study/{id}/template', function(Request $request, $id) {
                         <a href="%s" class="btn btn-danger delete-study remove_this"><i class="fas fa-fw fa-trash-alt"></i></a>
                     </div>
                 </div>';
-    $study = App\Study::find($id);
+    $study = Study::find($id);
     if(!is_null($study)) {
         $out = sprintf($template, $study->id, str_slug($study->type),
             get_screenshot(url("/attachments/show/$study->filename")),

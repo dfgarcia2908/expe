@@ -9,7 +9,7 @@ class NonPathological extends Model
     protected $fillable = ['living_place','personal_hygiene','sport_activities','hobbies','immunizations','smoking','alcoholism','drug','work_activities','feeding'];
 
     public function anamnesis(){
-        return $this->belongsTo('App\Anamnesis');
+        return $this->belongsTo('App\Models\Anamnesis');
     }
 
     public static function get_defaults() {

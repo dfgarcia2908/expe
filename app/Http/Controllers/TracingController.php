@@ -27,6 +27,10 @@ class TracingController extends Controller
      */
     public function create(Request $request, $id=-1)
     {
+        if($id == -1 && $request->has('patient')) {
+            $id = $request->input('patient');
+        }
+        
         $patient = Patient::find($id);
         if(!is_null($patient)) {
             return view("doctor.tracing.new", ["patient" => $patient]);
@@ -55,7 +59,7 @@ class TracingController extends Controller
             }
 
             if($request->has("tracings")) {
-                $tracing = $this->create_new("App\Tracing", "tracings");
+                $tracing = $this->create_new("App\Models\Tracing", "tracings");
                 $patient->initial_clinical_history->tracings()->save($tracing);
             }
 
@@ -223,7 +227,7 @@ class TracingController extends Controller
             $tracing = Tracing::find($id);
             if(!is_null($tracing)) {
                 $patient = $tracing->initial_clinical_history->patient;
-                $pdf_name = str_slug($patient->full_name)."-".str_slug($tracing->name)."-".date('d-m-Y_h_i_a');
+                $pdf_name = \Illuminate\Support\Str::slug($patient->full_name)."-".\Illuminate\Support\Str::slug($tracing->name)."-".date('d-m-Y_h_i_a');
                 $pdf = \PDF::loadView("pdf.$doc", [
                     "patient" => $patient,
                     "tracing" => $tracing

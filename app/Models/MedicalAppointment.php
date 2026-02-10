@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class MedicalAppointment extends Model
 {
-    protected $dates = ['created_at', 'updated_at', 'date'];
+    protected $casts = [
+        'date' => 'datetime',
+    ];
     protected $fillable = ['date','title','description'];
 
     public function patient() {
-        return $this->belongsTo('App\Patient');
+        return $this->belongsTo('App\Models\Patient');
     }
 
     public function doctor() {
-        return $this->belongsTo('App\Doctor');
+        return $this->belongsTo('App\Models\Doctor');
     }
 }

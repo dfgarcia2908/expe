@@ -11,29 +11,29 @@ class InitialClinicalHistory extends Model
     protected $fillable = ['current_condition','diagnostical_impression','treatment_plan','interconsultation','treatment'];
 
     public function anamnesis() {
-        return $this->hasOne('App\Anamnesis');
+        return $this->hasOne('App\Models\Anamnesis');
     }
 
     public function physical_exploration() {
-        return $this->hasOne('App\PhysicalExploration');
+        return $this->hasOne('App\Models\PhysicalExploration');
     }
 
     public function patient() {
-        return $this->belongsTo('App\Patient');
+        return $this->belongsTo('App\Models\Patient');
     }
 
     public function studies() {
-        return $this->hasMany('App\Study')
+        return $this->hasMany('App\Models\Study')
         ->orderBy('studies.id', 'desc');
     }
 
     public function tracings() {
-        return $this->hasMany('App\Tracing')
+        return $this->hasMany('App\Models\Tracing')
         ->orderBy('tracings.id', 'desc');
     }
 
     public function prescriptions() {
-        return $this->hasMany('App\Prescription')
+        return $this->hasMany('App\Models\Prescription')
         ->orderBy('prescriptions.id', 'desc');
     }
 

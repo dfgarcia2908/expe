@@ -32,6 +32,10 @@
 
     height: $header-height;
 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
     .nav-left,
     .nav-right {
       list-style: none;
@@ -121,10 +125,20 @@
     .nav-left {
       float: left;
       margin-left: 15px;
+      flex: 1 1 auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      order: 1;
+
+      & .search-input {
+        flex: 1 1 auto;
+      }
     }
 
     .nav-right {
       float: right;
+      order: 3;
 
       .dropdown-menu {
         left: auto;
@@ -140,6 +154,10 @@
           }
         }
       }
+    }
+
+    .navbar-text {
+      order: 2 !important;
     }
   }
 

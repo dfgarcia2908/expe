@@ -8,7 +8,7 @@ class Study extends Model
 {
     
     public function initial_clinical_history() {
-        return $this->belongs('App\InitialClinicalHistory');
+        return $this->belongs('App\Models\InitialClinicalHistory');
     }
 
     public function getRealPathAttribute() {

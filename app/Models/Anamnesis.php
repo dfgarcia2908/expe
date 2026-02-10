@@ -10,19 +10,19 @@ class Anamnesis extends Model
     protected $fillable = ['inherit_family'];
 
     public function non_pathological() {
-        return $this->hasOne('App\NonPathological');
+        return $this->hasOne('App\Models\NonPathological');
     }
 
     public function pathological_personal() {
-        return $this->hasOne('App\PathologicalPersonal');
+        return $this->hasOne('App\Models\PathologicalPersonal');
     }
 
     public function gynecological_obstetric_history() {
-        return $this->hasOne('App\GynecologicalObstetricHistory');
+        return $this->hasOne('App\Models\GynecologicalObstetricHistory');
     }
 
     public function initial_clinical_history() {
-        return $this->belongsTo('App\InitialClinicalHistory');
+        return $this->belongsTo('App\Models\InitialClinicalHistory');
     }
 
     public static function get_defaults() {

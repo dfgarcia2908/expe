@@ -177,15 +177,47 @@ $(document).ready(function() {
     }
 
     if($('#searched').length > 0) {
-        $('#searched').autocomplete({
+        console.log('Initializing autocomplete for #searched');
+        var autocompleteInstance = $('#searched').autocomplete({
             serviceUrl: HOME_URL + '/api/search',
-            formatResult: function (suggestion, currentValue) {
-                return '<a href="' + suggestion.data + '">'+ suggestion.value +'</a>';
+            minChars: 1,
+            deferRequestBy: 300,
+            paramName: 'query',
+            appendTo: 'body',
+            autoSelectFirst: false,
+            transformResult: function(response) {
+                console.log('Raw response:', response);
+                var result = typeof response === 'string' ? JSON.parse(response) : response;
+                console.log('Parsed result:', result);
+                
+                // Convert suggestions object to array
+                var suggestionsArray = [];
+                if (result.suggestions) {
+                    if (Array.isArray(result.suggestions)) {
+                        suggestionsArray = result.suggestions;
+                    } else {
+                        // Convert object to array
+                        suggestionsArray = Object.values(result.suggestions);
+                    }
+                }
+                
+                console.log('Suggestions array:', suggestionsArray);
+                return {
+                    suggestions: suggestionsArray
+                };
+            },
+            onSearchStart: function(params) {
+                console.log('Search started with:', params);
+            },
+            onSearchComplete: function(query, suggestions) {
+                console.log('Search complete. Query:', query, 'Suggestions:', suggestions);
             },
             onSelect: function (suggestion) {
+                console.log('Selected:', suggestion);
                 window.location.replace(suggestion.data);
             }
         });
+        console.log('Autocomplete instance:', autocompleteInstance);
     }
 
     var options = {
@@ -310,13 +342,13 @@ $(document).ready(function() {
                 block.removeClass("editing");
                 block.find(".save_block").addClass("d-none");
                 $(this).addClass("btn-primary").removeClass("btn-danger").find("i").addClass("fa-edit").removeClass("fa-times");
-                this._tippy.setContent(I18N.edit_settings);
+                if(this._tippy) this._tippy.setContent(I18N.edit_settings);
                 block.find(".form-control").addClass("form-control-plaintext").removeClass("form-control").attr("readonly", "readonly");
             } else {
                 block.addClass("editing");
                 block.find(".save_block").removeClass("d-none");
                 $(this).addClass("btn-danger").removeClass("btn-primary").find("i").addClass("fa-times").removeClass("fa-edit");
-                this._tippy.setContent(I18N.cancel_edit);
+                if(this._tippy) this._tippy.setContent(I18N.cancel_edit);
                 block.find(".form-control-plaintext").addClass("form-control").removeClass("form-control-plaintext").removeAttr("readonly");
             }
         });

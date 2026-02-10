@@ -28,6 +28,20 @@ class LoginController extends Controller
     protected $redirectTo = '/';
 
     /**
+     * Get the post login redirect path.
+     *
+     * @return string
+     */
+    public function redirectTo()
+    {
+        $user = auth()->user();
+        if ($user->is_assistant()) {
+            return route('patients');
+        }
+        return route('patients');
+    }
+
+    /**
      * Create a new controller instance.
      *
      * @return void

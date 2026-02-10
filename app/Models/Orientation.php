@@ -9,7 +9,7 @@ class Orientation extends Model
     protected $fillable = ['time','space','person'];
 
     public function neurological_examination() {
-        return $this->belongsTo('App\NeurologicalExamination');
+        return $this->belongsTo('App\Models\NeurologicalExamination');
     }
 
     public static function get_defaults() {

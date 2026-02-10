@@ -35,23 +35,23 @@ class User extends Authenticatable
     ];
 
     public function doctor() {
-        return $this->hasOne('App\Doctor');
+        return $this->hasOne('App\Models\Doctor');
     }
 
     public function assistant() {
-        return $this->hasOne('App\Assistant');
+        return $this->hasOne('App\Models\Assistant');
     }
 
     public function is_doctor() {
-        return $this->role === "1";
+        return $this->role == 1;
     }
 
     public function is_admin() {
-        return $this->role === "2";
+        return $this->role == 2;
     }
 
     public function is_assistant() {
-        return $this->role === "3";
+        return $this->role == 3;
     }
 
     public function get_role() {

@@ -30,7 +30,9 @@ function calcule_age($birthdate) {
 }
 
 function is_image($uri) {
-    return @is_array(getimagesize($uri));
+    if(!$uri || !file_exists($uri)) return false;
+    $result = @getimagesize($uri);
+    return is_array($result);
 }
 
 function remove_accents($str) {
@@ -44,10 +46,10 @@ function remove_accents($str) {
 
 function get_doctor_logo($doctor) {
     $logo = config("app.office_logo");
-    if(!is_image($logo)) {
-        $logo = asset("images/sisgec-logo.png");
+    if(!$logo || !file_exists(public_path($logo))) {
+        $logo = "images/sisgec-logo.png";
     }
-    return '<img src="'.$logo.'" />';
+    return '<img src="'.asset($logo).'" />';
 }
 
 function doctor() {

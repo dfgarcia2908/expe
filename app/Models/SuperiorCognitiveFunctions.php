@@ -9,7 +9,7 @@ class SuperiorCognitiveFunctions extends Model
     protected $fillable = ['abstract','concrete','literal','magical','arithmetic_calculation','ability_to_draw'];
 
     public function neurological_examination() {
-        return $this->belongsTo('App\NeurologicalExamination');
+        return $this->belongsTo('App\Models\NeurologicalExamination');
     }
 
     public static function get_defaults() {

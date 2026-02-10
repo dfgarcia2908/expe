@@ -9,11 +9,11 @@ class Prescription extends Model
     protected $fillable = ['date', 'prescription'];
 
     public function initial_clinical_history() {
-        return $this->belongsTo('App\InitialClinicalHistory');
+        return $this->belongsTo('App\Models\InitialClinicalHistory');
     }
 
     public function measures() {
-        return $this->hasOne('App\Measure');
+        return $this->hasOne('App\Models\Measure');
     }
 
     public function getFolioAttribute() {

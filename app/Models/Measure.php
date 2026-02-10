@@ -10,11 +10,11 @@ class Measure extends Model
     protected $fillable = ['weight','height','temperature','heart_rate','blood_pressure', 'breathing_frequency'];
 
     public function patient() {
-        return $this->belongsTo('App\Patient');
+        return $this->belongsTo('App\Models\Patient');
     }
 
     public function prescription() {
-        return $this->belongsTo('App\Prescription');
+        return $this->belongsTo('App\Models\Prescription');
     }
 
     public static function get_defaults() {

@@ -16,24 +16,43 @@ class MedicalAppointmentController extends Controller
      */
     public function index(Request $request)
     {
-        $appointments = MedicalAppointment::whereHas('doctor', function($query) {
-            $query->where([
-                ["id", "=", doctor()->doctor_id],
+        $user = auth()->user();
+        
+        if($user->is_admin()) {
+            $appointments = MedicalAppointment::where([
                 ["date", ">=", Carbon::today()],
                 ["date", "<=", Carbon::today()->addDays(30)]
-            ]);
-        })->orderBy('date', 'asc')->get();
+            ])->orderBy('date', 'asc')->get();
+        } else {
+            $doctorUser = doctor();
+            if(!isset($doctorUser->doctor)) {
+                abort(403);
+            }
+            
+            $appointments = MedicalAppointment::whereHas('doctor', function($query) use ($doctorUser) {
+                $query->where([
+                    ["id", "=", $doctorUser->doctor->id],
+                    ["date", ">=", Carbon::today()],
+                    ["date", "<=", Carbon::today()->addDays(30)]
+                ]);
+            })->orderBy('date', 'asc')->get();
+        }
         $now = Carbon::now();
         return view("doctor.appointments.index", compact('appointments', 'now'));
     }
 
     public function json(Request $request) {
+        $user = doctor();
+        if(!isset($user->doctor)) {
+            return response()->json([]);
+        }
+        
         if($request->has("start") && $request->has("end")) {
-            $appointments = MedicalAppointment::whereHas('doctor', function($query) use ($request) {
+            $appointments = MedicalAppointment::whereHas('doctor', function($query) use ($request, $user) {
                 $start = $request->query("start", date("Y-m-d"));
                 $end = $request->query("end", date("Y-m-d"));
                 $query->where([
-                    ["id", "=", doctor()->doctor_id],
+                    ["id", "=", $user->doctor->id],
                     ["date", ">=", Carbon::createFromFormat('Y-m-d', $start)],
                     ["date", "<=", Carbon::createFromFormat('Y-m-d', $end)]
                 ]);

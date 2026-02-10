@@ -15,15 +15,15 @@ class Patient extends Model
     protected $fillable = ['name', 'lastname', 'nickname', 'sex', 'birthdate', 'scholarship', 'occupation', 'religion', 'civil_status', 'place_of_residence', 'place_of_birth', 'referred_by', 'email', 'rfc', 'phone'];
 
     public function initial_clinical_history() {
-        return $this->hasOne('App\InitialClinicalHistory');
+        return $this->hasOne('App\Models\InitialClinicalHistory');
     }
 
     public function measures() {
-        return $this->hasOne('App\Measure');
+        return $this->hasOne('App\Models\Measure');
     }
 
     public function medical_appointments() {
-        return $this->hasMany('App\MedicalAppointment');
+        return $this->hasMany('App\Models\MedicalAppointment');
     }
 
     public static function get_defaults() {
