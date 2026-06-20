@@ -1,3 +1,9 @@
+@php
+    $notify = [];
+    if(\Session::has("notify")) {
+        $notify = \Session::get("notify");
+    }
+@endphp
 <!DOCTYPE html>
 <html>
     <head>
@@ -67,12 +73,20 @@
                 'ok': "{{ __('global.ok') }}",
                 'processing': "{{ __('global.processing') }}",
                 'sorry': "{{ __('error.sorry') }}",
-                'an_error_has_occurred': "{{ __('error.an_error_has_occurred') }}"
+                'an_error_has_occurred': "{{ __('error.an_error_has_occurred') }}",
+                'edit_settings': "{{ __('global.edit_settings') }}",
+                'cancel_edit': "{{ __('global.cancel_edit') }}",
+                'saving_draft': "{{ __('global.saving_draft') }}",
+                'saved_draft': "{{ __('global.saved_draft') }}",
+                'cancel_alert_title': "{{__('global.cancel_alert_title')}}",
+                'cancel_alert_text': "{{__('global.cancel_alert_text')}}"
             };
+            var Notifications = '{!! json_encode($notify) !!}';
+            var ProbatiumIP = "{{ config('app.probatium.ip') }}";
         </script>
     </head>
     <body class="app">
-        <div id='loader'>
+        <div id="loader">
             <div class="spinner"></div>
         </div>
 
@@ -85,18 +99,15 @@
             });
         </script>
 
-        <div>
-            @component('parts.sidebar')
-            @endcomponent
+        <div class="app-sisgec">
+            @include('parts.sidebar')
         
             <div class="page-container">
-                @component('parts.header')
-                @endcomponent
+                @include('parts.header')
 
                 <main class='main-content bgc-grey-100'>
                     <div id='mainContent'>
                         @section('content')
-                            
                         @show
                     </div>
                 </main>

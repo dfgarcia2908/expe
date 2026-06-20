@@ -37,6 +37,22 @@
             <div class="tab-content" id="patient-options-tabContent">
                 <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
                     <div class="bgc-white p-20 bd">
+                        <h4 class="c-grey-900"><i class="fa fa-chart-line"></i> {{ __("global.statistics") }}</h4>
+                        <div class="profile-list-info">
+                            <ul>
+                                <li title="{{$patient->created_at->diffForHumans()}}">
+                                    <strong>{{__('global.first_visit')}}:</strong> {{$patient->initial_clinical_history->created_at->format("d/m/Y")}}
+                                </li>
+                                <li title="{{$patient->last_update->diffForHumans()}}">
+                                    <strong>{{__('global.last_visit')}}:</strong> {{$patient->last_update->format("d/m/Y")}}
+                                </li>
+                                <li>
+                                    <strong>{{__('global.total_visits')}}:</strong> {{$patient->total_visits}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bgc-white p-20 bd mt-3">
                         <h4 class="c-grey-900"><i class="fa fa-user"></i> {{ __("global.identification_card") }}</h4>
                         <div class="profile-list-info">
                             <ul>
@@ -50,7 +66,7 @@
                                     <strong>{{ __("person.nickname") }}:</strong> {{ $patient->nickname }}
                                 </li>
                                 <li>
-                                    <strong>{{ __("person.sex") }}:</strong> {{ $patient->sex === 1 ? __("global.women") : __("global.man") }}
+                                    <strong>{{ __("person.sex") }}:</strong> {{ $patient->sex == 1 ? __("global.woman") : __("global.man") }}
                                 </li>
                                 <li>
                                     <strong>{{ __("person.birthdate") }}:</strong> {{ $patient->birthdate }} ({{ $patient->age . " " . __("person.years") }})
@@ -96,6 +112,9 @@
                                 </li>
                                 <li>
                                     <strong>{{ __("person.email") }}:</strong> {{ $patient->email }}
+                                </li>
+                                <li>
+                                    <strong>{{ __("person.rfc") }}:</strong> {{ $patient->rfc }}
                                 </li>
                                 <li>
                                     <strong>{{ __("person.phone") }}:</strong> {{ $patient->phone }}
@@ -191,6 +210,9 @@
                                         </li>
                                         <li>
                                             <strong>{{ __("global.blood_transfusions") }}:</strong> {{ $patient->initial_clinical_history->anamnesis->pathological_personal->blood_transfusions }}
+                                        </li>
+                                        <li>
+                                            <strong>{{ __("global.suicidal_risk") }}:</strong> {{ $patient->initial_clinical_history->anamnesis->pathological_personal->suicidal_risk }}
                                         </li>
                                     </ul>
                                 </div>
@@ -516,7 +538,7 @@
                     <div class="row mt-3 studies-list">
                         @forelse ($studies as $study)
                             <div class="col-12 col-sm-3 mb-3">
-                                <div class="bd bgc-white study study-{{ $study->id }} type-{{ str_slug($study->type) }}">
+                                <div class="bd bgc-white study study-{{ $study->id }} type-{{ str_slug($study->type) }}" data-tippy="{{$study->original_name}}" data-tippy-arrow="true">
                                     <img src="{{ $study->screenshot }}">
                                     <h3>{{ $study->original_name }}</h3>
                                     <p class="mb-0">{{ $study->type_name }}</p>
@@ -525,7 +547,7 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="col-12">
+                            <div class="col-12 no-results-banner">
                                 <div class="bd bgc-white mt-3 p-20">
                                     <div class="layer w-100 banner-message banner-message--error">
                                         <h4 class="mT-10 mB-30">{{ __("error.no_studies") }}</h4>
@@ -565,9 +587,9 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <div id="uploadFiles" class="sigec__dropzone" data-patient_id="{{ $patient->id === 1 ? "1" : $patient->id }}">
+                        <div id="uploadFiles" class="sigec__dropzone" data-patient_id="{{$patient->id.""}}">
                             <div class="dz-message needsclick">    
-                                Drop files here or click to upload.
+                                {{ __("global.drop_files_here_or_click_to_upload") }}
                             </div>
                             <div class="fallback">
                                 <input name="file" type="file" multiple />

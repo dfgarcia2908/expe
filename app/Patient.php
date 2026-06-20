@@ -12,7 +12,7 @@ class Patient extends Model
         'lastname' => ''
     ];
 
-    protected $fillable = ['name', 'lastname', 'nickname', 'sex', 'birthdate', 'scholarship', 'occupation', 'religion', 'civil_status', 'place_of_residence', 'place_of_birth', 'referred_by', 'email', 'phone'];
+    protected $fillable = ['name', 'lastname', 'nickname', 'sex', 'birthdate', 'scholarship', 'occupation', 'religion', 'civil_status', 'place_of_residence', 'place_of_birth', 'referred_by', 'email', 'rfc', 'phone'];
 
     public function initial_clinical_history() {
         return $this->hasOne('App\InitialClinicalHistory');
@@ -38,6 +38,7 @@ class Patient extends Model
             'place_of_birth' => '-',
             'referred_by' => '-',
             'email' => '-',
+            'rfc' => '-',
             'phone' => '-'
         );
     }
@@ -49,6 +50,23 @@ class Patient extends Model
     public function getAgeAttribute() {
         if(is_null($this->birthdate)) return "";
         return calcule_age($this->birthdate);
+    }
+
+    public function getLastUpdateAttribute() {
+        $lv = $this->updated_at;
+        $ltc = $this->initial_clinical_history->tracings()->count();
+        if($ltc > 0) {
+            $ltv = $this->initial_clinical_history->tracings->last()->updated_at;
+            if($ltv > $lv) {
+                return $ltv;
+            }
+        }
+        return $lv;
+    }
+
+    public function getTotalVisitsAttribute() {
+        $tv = $this->initial_clinical_history->tracings()->count() + 1; // tracings + 1rst visit
+        return trans_choice("global.visits", $tv);
     }
 
     public static function all_in_suggestion_format() {

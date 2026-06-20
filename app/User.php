@@ -37,16 +37,30 @@ class User extends Authenticatable
         return $this->hasOne('App\Doctor');
     }
 
+    public function assistant() {
+        return $this->hasOne('App\Assistant');
+    }
+
     public function is_doctor() {
         return $this->role === "1";
     }
 
     public function is_admin() {
-        return $this->role === "0";
+        return $this->role === "2";
     }
 
     public function is_assistant() {
-        return $this->role === "2";
+        return $this->role === "3";
+    }
+
+    public function get_role() {
+        if($this->is_admin()) {
+            return "admin";
+        } else if($this->is_doctor()) {
+            return "doctor";
+        } else {
+            return "assistant";
+        }
     }
 
     public function getFullNameAttribute() {

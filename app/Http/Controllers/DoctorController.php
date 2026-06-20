@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Doctor;
+use App\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -89,6 +90,10 @@ class DoctorController extends Controller
                 $doctor->professional_license = $request->input("doctor.professional_license", $doctor->professional_license);
             }
 
+            if($request->has("probatium")) {
+                $this->saveSettingOrCreateNewIfNotExist("app.probatium.ip", $request->input("probatium.ip", config("app.probatium.ip")));
+            }
+
             if($request->has("password")) {
                 $request->validate([
                     'password.new' => 'required|min:6|',
@@ -103,19 +108,31 @@ class DoctorController extends Controller
 
             if($request->has("password")) {
                 Auth::logout();
-                return redirect()->route("login");
+                $notify = [
+                    [
+                        "type" => "success",
+                        "message" => __("global.your_password_has_been_changed_correctly_please_sign_in_again")
+                    ]
+                ];
+                return redirect()->route("login")->with("notify", $notify);
             }
 
-            /**
-             * @TODO Add successfull message here
-             */
-            return redirect()->back();
+            $notify = [
+                [
+                    "type" => "success",
+                    "message" => __("global.options_saved_correctly")
+                ]
+            ];
+            return redirect()->back()->with("notify", $notify);
         }
 
-        /**
-         * @TODO add error message here
-         */
-        return redirect()->back();
+        $notify = [
+            [
+                "type" => "error",
+                "message" => __("global.an_error_occurred_while_saving")
+            ]
+        ];
+        return redirect()->back()->with("notify", $notify);
     }
 
     /**
@@ -129,7 +146,24 @@ class DoctorController extends Controller
         //
     }
 
+    public function saveSettingOrCreateNewIfNotExist($key, $value) {
+        $setting = Settings::where("key", $key)->first();
+        if(!is_null($setting)) {
+            $setting->update([
+                'key' => $key,
+                'value' => $value
+            ]);
+        } else {
+            $setting = Settings::create([
+                'key' => $key,
+                'value' => $value
+            ]);
+        }
+        return $setting;
+    }
+
     public function settings(Request $request) {
-        return view("doctor.settings.index");
+        $role = auth()->user()->get_role();
+        return view("$role.settings.index");
     }
 }

@@ -52,13 +52,15 @@
                 'url' => route("medical_appointments")
             ])
             @endcomponent
-            @component('atom/sidebar-menu-item', [
-                'title' => __("sidebar.new_prescription"),
-                'icon' => 'ti-pencil-alt',
-                'color' => 'c-brown-500',
-                'url' => route("prescription.new")
-            ])
-            @endcomponent
+            @if (auth()->user()->is_doctor())
+                @component('atom/sidebar-menu-item', [
+                    'title' => __("sidebar.assistants"),
+                    'icon' => 'ti-user',
+                    'color' => 'c-brown-500',
+                    'url' => route("assistants")
+                ])
+                @endcomponent
+            @endif
         </ul>
     </div>
 </div>
